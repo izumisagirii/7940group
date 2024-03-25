@@ -23,3 +23,7 @@ jobs:
         file: ./Dockerfile
         push: true
         tags: electrow/comp7940_group:latest
+        build-args: |
+          BOT_TOKEN=${{ secrets.BOT_TOKEN }}
+          COSMOSDB_URL=${{ secrets.COSMOSDB_URL }}
+          COSMOSDB_KEY=${{ secrets.COSMOSDB_KEY }}
