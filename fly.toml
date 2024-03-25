@@ -1,9 +1,9 @@
-# fly.toml app configuration file generated for 7940group-restless-fog-3523 on 2024-03-26T06:36:56+08:00
+# fly.toml app configuration file generated for group7940 on 2024-03-26T07:49:22+08:00
 #
 # See https://fly.io/docs/reference/configuration/ for information about how to use this file.
 #
 
-app = '7940group-restless-fog-3523'
+app = 'group7940'
 primary_region = 'hkg'
 
 [build]
@@ -17,6 +17,4 @@ primary_region = 'hkg'
   processes = ['app']
 
 [[vm]]
-  memory = '1gb'
-  cpu_kind = 'shared'
-  cpus = 1
+  size = 'shared-cpu-1x'
