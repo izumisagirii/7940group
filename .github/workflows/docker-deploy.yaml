@@ -27,6 +27,8 @@ jobs:
           BOT_TOKEN=${{ secrets.BOT_TOKEN }}
           COSMOSDB_URL=${{ secrets.COSMOSDB_URL }}
           COSMOSDB_KEY=${{ secrets.COSMOSDB_KEY }}
+    - name: Install flyctl
+      uses: superfly/flyctl-actions/setup-flyctl@master
     - name: Deploy to Fly.io
       run: |
         flyctl auth token --copy
