@@ -29,8 +29,9 @@ jobs:
           COSMOSDB_KEY=${{ secrets.COSMOSDB_KEY }}
     - name: Install flyctl
       uses: superfly/flyctl-actions/setup-flyctl@master
+    - uses: actions/checkout@v3
     - name: Deploy to Fly.io
-      uses: actions/checkout@v3
+      # uses: actions/checkout@v3
       run: |
         flyctl deploy --image electrow/comp7940_group:latest -a group7940
         env:
