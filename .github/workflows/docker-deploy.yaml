@@ -1,4 +1,4 @@
-name: Deploy to Docker Hub
+name: Deploy to Docker Hub and Azure Container Apps
 
 on:
   push:
@@ -27,10 +27,19 @@ jobs:
           BOT_TOKEN=${{ secrets.BOT_TOKEN }}
           COSMOSDB_URL=${{ secrets.COSMOSDB_URL }}
           COSMOSDB_KEY=${{ secrets.COSMOSDB_KEY }}
-    - name: Install flyctl
-      uses: superfly/flyctl-actions/setup-flyctl@master
-    # - uses: actions/checkout@v3
-    - name: Deploy to Fly.io
-      run: flyctl deploy --remote-only --image electrow/comp7940_group:latest -a group7940
+    - name: Login to Azure
+      uses: azure/login@v1
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+    - name: Deploy to Azure Container Apps
+      run: |
+        az containerapp create \
+          --name server \
+          --resource-group COMP7940-2024 \
+          --image electrow/comp7940_group:latest \
+          --environment managedEnvironment-COMP79402024-898f \
+          --target-port 80 \
+          --ingress 'external' \
+          --query 'configuration.ingress.fqdn'
       env:
-        FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+        AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
