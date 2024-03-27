@@ -170,10 +170,10 @@ def query_api(term, location):
 
     # Display the top 5 businesses or the total number of businesses found if less than 5
     for business in businesses[:]:
-        print(u'Business ID: {0}, EnglishName: {1}, ChinesesName: {2}'.format(business['id'], business['name'], business['alias']))
+        print(u'Business ID: {0}, Name: {1}, Alternate Name: {2}'.format(business['id'], business['name'], business['alias']))
         print(u'Rating: {0}, Number of Reviews: {1}'.format(business['rating'], business['review_count'],))
-        print(u'Address: {0}, City: {1}, State: {2}, Phone Num: {3}'.format(business['location']['address1'], business['location']['city'], business['location']['state'], business['phone']))
-    
+        print(u'Address: {0}'.format(', '.join(business['location']['display_address'])))
+        print(u'Phone Num: {0}'.format(business['phone']))
     #print(u'Result for business "{0}" found:'.format(first_business_id))
     #pprint.pprint(response, indent=2)
 
