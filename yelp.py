@@ -158,8 +158,8 @@ def query_api(term, location):
     response = search(API_KEY, term, location)
 
     businesses = response.get('businesses')
-
-    first_business_id = businesses[0]['id']
+    pprint.pprint(businesses, indent=2)
+    #first_business_id = businesses[0]['id']
 
 
     if not businesses:
@@ -170,32 +170,43 @@ def query_api(term, location):
 
     # Display the top 5 businesses or the total number of businesses found if less than 5
     for business in businesses[:]:
-        print(u'Business ID: {0}, Name: {1}'.format(business['id'], business['name'], ))
+        print(u'Business ID: {0}, EnglishName: {1}, ChinesesName: {2}'.format(business['id'], business['name'], business['alias']))
+        print(u'Rating: {0}, Number of Reviews: {1}'.format(business['rating'], business['review_count'],))
+        print(u'Address: {0}, City: {1}, State: {2}, Phone Num: {3}'.format(business['location']['address1'], business['location']['city'], business['location']['state'], business['phone']))
     
-    print(u'Result for business "{0}" found:'.format(first_business_id))
-    pprint.pprint(response, indent=2)
+    #print(u'Result for business "{0}" found:'.format(first_business_id))
+    #pprint.pprint(response, indent=2)
 
-def main():
-    parser = argparse.ArgumentParser()
 
-    parser.add_argument('-q', '--term', dest='term', default=DEFAULT_TERM,
-                        type=str, help='Search term (default: %(default)s)')
-    parser.add_argument('-l', '--location', dest='location',
-                        default=DEFAULT_LOCATION, type=str,
-                        help='Search location (default: %(default)s)')
 
-    input_values = parser.parse_args()
 
-    try:
-        query_api(input_values.term, input_values.location)
-    except HTTPError as error:
-        sys.exit(
-            'Encountered HTTP error {0} on {1}:\n {2}\nAbort program.'.format(
-                error.code,
-                error.url,
-                error.read(),
-            )
+
+
+
+
+
+
+#def main():
+parser = argparse.ArgumentParser()
+
+parser.add_argument('-q', '--term', dest='term', default=DEFAULT_TERM,
+                    type=str, help='Search term (default: %(default)s)')
+parser.add_argument('-l', '--location', dest='location',
+                    default=DEFAULT_LOCATION, type=str,
+                    help='Search location (default: %(default)s)')
+
+input_values = parser.parse_args()
+
+try:
+    query_api(input_values.term, input_values.location)
+except HTTPError as error:
+    sys.exit(
+        'Encountered HTTP error {0} on {1}:\n {2}\nAbort program.'.format(
+            error.code,
+            error.url,
+            error.read(),
         )
+    )
 
-if __name__ == '__main__':
-    main()
+#if __name__ == '__main__':
+#    main()
