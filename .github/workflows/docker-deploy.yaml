@@ -43,7 +43,4 @@ jobs:
           --query 'configuration.ingress.fqdn'
       env:
         AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
-    - name: Restart Azure Container App
-      run: |
-        echo "Restarting Azure Container App..."
-        az containerapp restart --name server --resource-group COMP7940-2024
+
