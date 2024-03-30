@@ -41,7 +41,7 @@ jobs:
           --target-port 80 \
           --ingress 'external' \
           --query 'configuration.ingress.fqdn' \
-          --revision server--a084q0e
+          --revision-suffix a084q0e
       env:
         AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
 
