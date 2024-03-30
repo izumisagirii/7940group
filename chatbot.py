@@ -84,7 +84,7 @@ def handle_message(update, context):
 
     # add your process of bot_reply
 
-    bot_reply = "zsbd"
+    bot_reply = "zsbdddd"
     mongodb.storage(update, context, bot_reply)
     update.message.reply_text(bot_reply)
 
