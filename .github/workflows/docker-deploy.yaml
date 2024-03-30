@@ -27,19 +27,22 @@ jobs:
           BOT_TOKEN=${{ secrets.BOT_TOKEN }}
           COSMOSDB_URL=${{ secrets.COSMOSDB_URL }}
           COSMOSDB_KEY=${{ secrets.COSMOSDB_KEY }}
-    - name: Login to Azure
+    - name: Log in to Azure
       uses: azure/login@v1
       with:
         creds: ${{ secrets.AZURE_CREDENTIALS }}
-    - name: Deploy to Azure Container Apps
-      run: |
-        az containerapp create \
-          --name server \
-          --resource-group COMP7940-2024 \
-          --image electrow/comp7940_group:latest \
-          --environment managedEnvironment-COMP79402024-898f \
-          --target-port 80 \
-          --ingress 'external' \
-          --query 'configuration.ingress.fqdn'
-      env:
-        AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
+    - name: Log in to Docker Registry
+      uses: docker/login-action@v1
+      with:
+        registry: tripbotserver.azurecr.io
+        username: tripbotserver
+        password: ${{ secrets.REGISTRY_PASSWORD }}
+    - name: Build and deploy Container App
+      uses: azure/container-apps-deploy-action@v1
+      with:
+        appSourcePath: ${{ github.workspace }}/
+        acrName: tripbotserver
+        containerAppName: server
+        resourceGroup: COMP7940-2024
+        acrUsername: tripbotserver
+        acrPassword: ${{ secrets.REGISTRY_PASSWORD }}
