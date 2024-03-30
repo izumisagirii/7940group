@@ -37,9 +37,13 @@ jobs:
           --name server \
           --resource-group COMP7940-2024 \
           --image electrow/comp7940_group:latest \
-          --environment managedEnvironment-COMP79402024-898f \
+          --environment managedEnvironment-COMP79402024-a812 \
           --target-port 80 \
           --ingress 'external' \
           --query 'configuration.ingress.fqdn'
       env:
         AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
+    - name: Restart Azure Container App
+      run: |
+        echo "Restarting Azure Container App..."
+        az containerapp restart --name server --resource-group COMP7940-2024
