@@ -25,7 +25,7 @@ import urllib
 import configparser
 config = configparser.ConfigParser()
 config.read('yelpconfig.ini')
-print(config.sections())
+#print(config.sections())
 
 # This client code can run on Python 2.x or 3.x.  Your imports can be
 # simpler if you only need one of those.
