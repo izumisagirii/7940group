@@ -19,7 +19,8 @@ app.add_url_rule('/liveness', 'liveness', liveness_probe)
 
 def main():
 
-    app.run(port=443, ssl_context='adhoc')
+    # Handle http probes, which are required by Microsoft container app
+    app.run(port=443)
     # Load your token and create an Updater for your Bot
     telegram_token = os.environ['BOT_TOKEN']
     updater = Updater(
