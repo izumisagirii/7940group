@@ -9,14 +9,15 @@ class Route():
         pass
 
     def query_route(self, start, end):
-        gmaps = googlemaps.Client(key='AIzaSyAWuoSydN7jIKsJxjbQz1sfN8ytN30iTwc')
+        """This function is used to query the route between two locations."""
+        gmaps = googlemaps.Client(key='AIzaSyAWuoSydN7jIKsJxjbQz1sfN8ytN30iTwc')        # Establish communication with Google Maps API
 
         now = datetime.now()
 
         try:
             directions_result = gmaps.directions(start, end,
                                                  mode="transit",
-                                                 departure_time=now)
+                                                 departure_time=now)            # Queries route information between two locations and sets the travel mode to 'transit', indicating a public transport mode.
 
             Start_Address, End_Address, Distance, Duration, Step = Route.process_step(self, directions_result)
 
@@ -26,6 +27,7 @@ class Route():
             return None
 
     def process_step(self, directions):
+        """This function is used to extract what we want from the obtained route information."""
         Step = []
         legs = directions[0]['legs']
         for leg in legs:
