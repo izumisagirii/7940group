@@ -8,9 +8,18 @@ import logging
 import mongodb
 import os
 from Google_Route import Route
+from flask import Flask
+from probes import startup_probe, readiness_probe, liveness_probe
+
+app = Flask(__name__)
+app.add_url_rule('/startup', 'startup', startup_probe)
+app.add_url_rule('/readiness', 'readiness', readiness_probe)
+app.add_url_rule('/liveness', 'liveness', liveness_probe)
 
 
 def main():
+
+    app.run(port=443, ssl_context='adhoc')
     # Load your token and create an Updater for your Bot
     telegram_token = os.environ['BOT_TOKEN']
     updater = Updater(
@@ -76,40 +85,45 @@ def hello_command(update: Update, context: CallbackContext) -> None:
     except (IndexError, ValueError):
         update.message.reply_text('Good day!')
 
-def route(update: Update, context: CallbackContext) -> None:
-	"""Send a message when the command /route is issued."""
-	try:
-		global google_route
-		i = 0
-		logging.info(context.args)          # Get the text entered by the user
-		start_add, end_add = extract_addresses_from_context(context.args)           # Extract the start address and end address from the text entered by the user
-		Start_Address,End_Address,Distance,Duration,Step = google_route.query_route(start_add,end_add)      # Get route information
-		if Start_Address is None:
-			update.message.reply_text('Your input maybe wrong, please check')
-		else:
-			update.message.reply_text('Start Address: ' + Start_Address +
-								  	  '\nEnd Address: ' + End_Address +
-									  '\nDistance: ' + Distance +
-									  '\nDuration: ' + Duration)
-			for step in Step:       # Show the user each step in the route, and if there is a step to take the metro or bus, show the information about the metro or bus to be taken.
-				i += 1
-				if "description" in step:
-					update.message.reply_text('   Step'+ str(i) + '-' + step["description"])
-				elif "Bus Information" in step:
-					subway_info = step["Bus Information"]
-					update.message.reply_text("Bus informarion:\n")
-					for key, value in subway_info.items():
-						update.message.reply_text( key + ": " + str(value))
-					i -= 1
-				elif "Subway Information" in step:
-					subway_info = step["Subway Information"]
-					update.message.reply_text("Subway informarion:\n")
-					for key, value in subway_info.items():
-						update.message.reply_text( key + ": " + str(value))
-					i -= 1
 
-	except (IndexError, ValueError):
-		update.message.reply_text('Usage: /route S: <start address> E: <end address>')
+def route(update: Update, context: CallbackContext) -> None:
+    """Send a message when the command /route is issued."""
+    try:
+        global google_route
+        i = 0
+        logging.info(context.args)          # Get the text entered by the user
+        # Extract the start address and end address from the text entered by the user
+        start_add, end_add = extract_addresses_from_context(context.args)
+        Start_Address, End_Address, Distance, Duration, Step = google_route.query_route(
+            start_add, end_add)      # Get route information
+        if Start_Address is None:
+            update.message.reply_text('Your input maybe wrong, please check')
+        else:
+            update.message.reply_text('Start Address: ' + Start_Address +
+                                      '\nEnd Address: ' + End_Address +
+                                      '\nDistance: ' + Distance +
+                                      '\nDuration: ' + Duration)
+            for step in Step:       # Show the user each step in the route, and if there is a step to take the metro or bus, show the information about the metro or bus to be taken.
+                i += 1
+                if "description" in step:
+                    update.message.reply_text(
+                        '   Step' + str(i) + '-' + step["description"])
+                elif "Bus Information" in step:
+                    subway_info = step["Bus Information"]
+                    update.message.reply_text("Bus informarion:\n")
+                    for key, value in subway_info.items():
+                        update.message.reply_text(key + ": " + str(value))
+                    i -= 1
+                elif "Subway Information" in step:
+                    subway_info = step["Subway Information"]
+                    update.message.reply_text("Subway informarion:\n")
+                    for key, value in subway_info.items():
+                        update.message.reply_text(key + ": " + str(value))
+                    i -= 1
+
+    except (IndexError, ValueError):
+        update.message.reply_text(
+            'Usage: /route S: <start address> E: <end address>')
 
 # def equiped_chatgpt(update, context):
 #     global chatgpt
@@ -119,12 +133,14 @@ def route(update: Update, context: CallbackContext) -> None:
 #     context.bot.send_message(
 #         chat_id=update.effective_chat.id, text=reply_message)
 
+
 def handle_message(update, context):
     # add your process of bot_reply
 
     bot_reply = "zsbdddd"
     mongodb.storage(update, context, bot_reply)
     update.message.reply_text(bot_reply)
+
 
 def extract_addresses_from_context(address_list):
     """This function is used to retrieve the start address and end address from the text entered by the user."""
@@ -133,7 +149,8 @@ def extract_addresses_from_context(address_list):
     start_flag = False
     end_flag = False
 
-    for item in address_list:       # Fault-tolerance for addresses in case the user does not add a space after "S:" or "E:" when typing.
+    # Fault-tolerance for addresses in case the user does not add a space after "S:" or "E:" when typing.
+    for item in address_list:
         if item.startswith("S:"):
             start += item[len("S:"):].strip() + " "
             start_flag = True
@@ -147,6 +164,7 @@ def extract_addresses_from_context(address_list):
             end += item + ' '
 
     return start.strip(), end.strip()
+
 
 if __name__ == '__main__':
     main()
