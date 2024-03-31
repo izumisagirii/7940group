@@ -24,6 +24,9 @@ import pprint
 import requests
 import sys
 import urllib
+import configparser
+config = configparser.ConfigParser()
+config.read('yelpconfig.ini')
 
 
 # This client code can run on Python 2.x or 3.x.  Your imports can be
@@ -45,7 +48,7 @@ except ImportError:
 # It now uses private keys to authenticate requests (API Key)
 # You can find it on
 # https://www.yelp.com/developers/v3/manage_app
-API_KEY= 'KJw1YCF5WJzMMwV458YOCd3KRTMhUHjC7SZ5tv24vHKVBWZsDFlm3z9DVyRvtA6_0xMTwnDRUBqPq9od8JVBEp3363UFnvgtKLC0D4pD-FcSuLWvrQvaPgTwcZj4ZXYx'
+API_KEY= config.get('YELP', 'ACCESS_TOKEN')
 
 
 # API constants, you shouldn't have to change these.
