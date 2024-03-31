@@ -5,9 +5,9 @@ from flask import jsonify
 def startup_probe():
     is_ready = True
     if is_ready:
-        return jsonify({'status': 'starting'}), 503
-    else:
         return jsonify({'status': 'started'}), 200
+    else:
+        return jsonify({'status': 'starting'}), 503
 
 
 def readiness_probe():
