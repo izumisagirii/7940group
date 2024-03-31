@@ -33,11 +33,11 @@ jobs:
         creds: ${{ secrets.AZURE_CREDENTIALS }}
     - name: Deploy to Azure Container Apps
       run: |
-        az containerapp update -n server -g COMP7940-2024 --image electrow/comp7940_group:latest
+        az containerapp update --name server --resource-group COMP7940-2024 --yaml ${{ github.workspace }}/parameters.json
       env:
         AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
-    - name: Deactiviate one Revision (I dont know why but works)
-      run: az containerapp revision deactivate -g COMP7940-2024 --revision server--bnjz2s8 && az containerapp revision restart -n server -g COMP7940-2024 --revision server--35pni10
+    - name: Restart container
+      run: az containerapp revision deactivate -g COMP7940-2024 --revision server--um4e6kt && az containerapp revision activate -g COMP7940-2024 --revision server--um4e6kt
       env:
         AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
 

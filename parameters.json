@@ -1,0 +1,60 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "subscriptionId": {
+            "value": "f2ceada1-f874-4424-99d5-6a614ba78117"
+        },
+        "name": {
+            "value": "server"
+        },
+        "location": {
+            "value": "southeastasia"
+        },
+        "environmentId": {
+            "value": "/subscriptions/f2ceada1-f874-4424-99d5-6a614ba78117/resourceGroups/COMP7940-2024/providers/Microsoft.App/managedEnvironments/managedEnvironment-COMP79402024-a4b5"
+        },
+        "containers": {
+            "value": [
+                {
+                    "name": "server",
+                    "image": "docker.io/electrow/comp7940_group:latest",
+                    "command": [],
+                    "resources": {
+                        "cpu": 0.5,
+                        "memory": "1Gi"
+                    }
+                }
+            ]
+        },
+        "registries": {
+            "value": []
+        },
+        "secrets": {
+            "value": {
+                "arrayValue": []
+            }
+        },
+        "ingress": {
+            "value": {
+                "external": false,
+                "transport": "Auto",
+                "allowInsecure": true,
+                "targetPort": 443,
+                "stickySessions": {
+                    "affinity": "none"
+                },
+                "additionalPortMappings": []
+            }
+        },
+        "environmentName": {
+            "value": "managedEnvironment-COMP79402024-a4b5"
+        },
+        "workspaceName": {
+            "value": "workspacecomp794020249f14"
+        },
+        "workspaceLocation": {
+            "value": "southeastasia"
+        }
+    }
+}
