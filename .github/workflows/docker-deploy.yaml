@@ -37,7 +37,7 @@ jobs:
       env:
         AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
     - name: Deactiviate one Revision (I dont know why but works)
-      run: az containerapp revision deactivate -g COMP7940-2024 --revision server--a084q0e
+      run: az containerapp revision deactivate -g COMP7940-2024 --revision server--35pni10
       env:
         AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
 
