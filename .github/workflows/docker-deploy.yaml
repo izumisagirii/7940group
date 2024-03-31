@@ -33,13 +33,11 @@ jobs:
         creds: ${{ secrets.AZURE_CREDENTIALS }}
     - name: Deploy to Azure Container Apps
       run: |
-        az containerapp create \
-          --name server \
-          --resource-group COMP7940-2024 \
-          --image electrow/comp7940_group:latest \
-          --environment managedEnvironment-COMP79402024-898f \
-          --target-port 80 \
-          --ingress 'external' \
-          --query 'configuration.ingress.fqdn'
+        az containerapp update -n server -g COMP7940-2024 --image electrow/comp7940_group:latest
       env:
         AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
+    - name: Deactiviate one Revision (I dont know why but works)
+      run: az containerapp revision deactivate -g COMP7940-2024 --revision server--a084q0e
+      env:
+        AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
+
