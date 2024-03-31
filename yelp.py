@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 """
-Yelp Fusion API code sample.
-
 This program demonstrates the capability of the Yelp Fusion API
 by using the Search API to query for businesses by a search term and location,
 and the Business API to query additional information about the top result
@@ -27,7 +25,7 @@ import urllib
 import configparser
 config = configparser.ConfigParser()
 config.read('yelpconfig.ini')
-
+print(config.sections())
 
 # This client code can run on Python 2.x or 3.x.  Your imports can be
 # simpler if you only need one of those.
@@ -49,7 +47,7 @@ except ImportError:
 # You can find it on
 # https://www.yelp.com/developers/v3/manage_app
 API_KEY= config.get('YELP', 'ACCESS_TOKEN')
-
+#print(API_KEY)
 
 # API constants, you shouldn't have to change these.
 API_HOST = 'https://api.yelp.com'
