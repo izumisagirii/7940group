@@ -105,36 +105,32 @@ def route(update: Update, context: CallbackContext) -> None:
         logging.info(context.args)          # Get the text entered by the user
         # Extract the start address and end address from the text entered by the user
         start_add, end_add = extract_addresses_from_context(context.args)
-        Start_Address, End_Address, Distance, Duration, Step = google_route.query_route(
-            start_add, end_add)      # Get route information
-        if Start_Address is None:
-            update.message.reply_text('Your input maybe wrong, please check')
-        else:
-            update.message.reply_text('Start Address: ' + Start_Address +
-                                      '\nEnd Address: ' + End_Address +
-                                      '\nDistance: ' + Distance +
-                                      '\nDuration: ' + Duration)
-            for step in Step:       # Show the user each step in the route, and if there is a step to take the metro or bus, show the information about the metro or bus to be taken.
-                i += 1
-                if "description" in step:
-                    update.message.reply_text(
-                        '   Step' + str(i) + '-' + step["description"])
-                elif "Bus Information" in step:
-                    subway_info = step["Bus Information"]
-                    update.message.reply_text("Bus informarion:\n")
-                    for key, value in subway_info.items():
-                        update.message.reply_text(key + ": " + str(value))
-                    i -= 1
-                elif "Subway Information" in step:
-                    subway_info = step["Subway Information"]
-                    update.message.reply_text("Subway informarion:\n")
-                    for key, value in subway_info.items():
-                        update.message.reply_text(key + ": " + str(value))
-                    i -= 1
+        Start_Address, End_Address, Distance, Duration, Step = google_route.query_route(start_add, end_add)      # Get route information
 
-    except (IndexError, ValueError):
-        update.message.reply_text(
-            'Usage: /route S: <start address> E: <end address>')
+        update.message.reply_text('Start Address: ' + Start_Address +
+                                '\nEnd Address: ' + End_Address +
+                                '\nDistance: ' + Distance +
+                                '\nDuration: ' + Duration)
+        for step in Step:       # Show the user each step in the route, and if there is a step to take the metro or bus, show the information about the metro or bus to be taken.
+             i += 1
+             if "description" in step:
+                update.message.reply_text('   Step' + str(i) + '-' + step["description"])
+             elif "Bus Information" in step:
+                subway_info = step["Bus Information"]
+                update.message.reply_text("Bus informarion:\n")
+                for key, value in subway_info.items():
+                    update.message.reply_text(key + ": " + str(value))
+                i -= 1
+             elif "Subway Information" in step:
+                subway_info = step["Subway Information"]
+                update.message.reply_text("Subway informarion:\n")
+                for key, value in subway_info.items():
+                     update.message.reply_text(key + ": " + str(value))
+                i -= 1
+
+    except (IndexError, ValueError, TypeError):
+        update.message.reply_text('Your input maybe wrong, please check')
+        update.message.reply_text('Usage: /route S: <start address> E: <end address>')
 
 def yelp_in_bot(update: Update, context: CallbackContext) -> None:
     """Send a message when the command /yelp is issued.
