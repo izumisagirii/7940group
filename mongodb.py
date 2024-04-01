@@ -10,7 +10,7 @@ cosmosdb_key = os.environ['COSMOSDB_KEY']
 cosmosdb_database_name = 'comp7940group'
 cosmosdb_collection_name = 'group_data'
 
-cosmosdb_full = f'mongodb+srv://satorip:{cosmosdb_key}@{cosmosdb_url}/?tls=true&authMechanism=SCRAM-SHA-256&retrywrites=false&maxIdleTimeMS=120000'
+cosmosdb_full = f'mongodb+srv://satorip:{cosmosdb_key}@{cosmosdb_url}/?tls=true&authMechanism=SCRAM-SHA-256&retrywrites=true'
 client = MongoClient(cosmosdb_full)
 print(cosmosdb_full)
 db = client[cosmosdb_database_name]
