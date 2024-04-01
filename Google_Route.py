@@ -10,7 +10,7 @@ class Route():
 
     def query_route(self, start, end):
         """This function is used to query the route between two locations."""
-        gmaps = googlemaps.Client(key='AIzaSyAWuoSydN7jIKsJxjbQz1sfN8ytN30iTwc')        # Establish communication with Google Maps API
+        gmaps = googlemaps.Client(key = os.environ['GOOGLE_TOKEN'])        # Establish communication with Google Maps API
 
         now = datetime.now()
 
