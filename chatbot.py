@@ -8,6 +8,8 @@ import logging
 import mongodb
 import os
 from Google_Route import Route
+import yelp
+
 
 
 def main():
@@ -34,6 +36,7 @@ def main():
     global google_route
     google_route = Route()
     dispatcher.add_handler(CommandHandler("route", route))
+    dispatcher.add_handler(CommandHandler('yelp',yelp_in_bot))
 
     # register a dispatcher to handle message: here we register an echo dispatcher
     # echo_handler = MessageHandler(Filters.text & (~Filters.command), echo)
@@ -110,6 +113,56 @@ def route(update: Update, context: CallbackContext) -> None:
 
 	except (IndexError, ValueError):
 		update.message.reply_text('Usage: /route S: <start address> E: <end address>')
+
+def yelp_in_bot(update: Update, context: CallbackContext) -> None:
+    """Send a message when the command /yelp is issued.
+
+    Args:
+        update (Update): This update is a message update.
+        context (CallbackContext): The context of the bot’s conversation with the user.
+
+    Returns:
+        None
+    """
+    # Extract the location and type parameters from the user's message
+    text = update.message.text
+    try:
+        logging.info(context.args) 
+        # Assuming the user's input format is "/yelp location: <location>, type: <type>"
+        parts = text.split(' ')
+        location_parameter = None
+        type_parameter = None
+        for part in parts:
+            if part.startswith('location:'):
+                location_parameter = part.split(':')[1]
+            elif part.startswith('type:'):
+                type_parameter = part.split(':')[1]
+                #Scan through elements in parts, check if starts with 'location:' or 'type:', and assign the value to location_parameter or type_parameter accordingly.
+        if location_parameter is None or type_parameter is None:
+            update.message.reply_text('Please provide both location and type parameters in the format: /yelp location: <location>, type: <type>')
+            return
+
+        # Use the yelp module to search for businesses based on the location and type parameters
+        response = yelp.search(api_key='KJw1YCF5WJzMMwV458YOCd3KRTMhUHjC7SZ5tv24vHKVBWZsDFlm3z9DVyRvtA6_0xMTwnDRUBqPq9od8JVBEp3363UFnvgtKLC0D4pD-FcSuLWvrQvaPgTwcZj4ZXYx',
+                                term=type_parameter, location=location_parameter)
+        businesses = response.get('businesses', [])
+
+        if not businesses:
+            update.message.reply_text('No businesses found for the given location and type.')
+            return
+
+        # Format the response to display the top 5 businesses or the total number of businesses found
+        message = 'Businesses found for "{}" in "{}":\n'.format(type_parameter, location_parameter)
+        for i, business in enumerate(businesses[:5], start=1):
+            message += '{}. {} - {} stars ({} reviews)\n'.format(i, business['name'], business['rating'], business['review_count'])
+            message += 'Address: {}\n'.format(', '.join(business['location']['display_address']))
+            message += 'Phone Num: {}'.format(', '.join(business['phone']))
+        message += '...\n'
+
+        update.message.reply_text(message)
+    except Exception as e:
+        update.message.reply_text('An error occurred while searching for businesses: {}, Usage: /location: <location>, type: <type>'.format(str(e)))
+      
 
 # def equiped_chatgpt(update, context):
 #     global chatgpt

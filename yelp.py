@@ -182,32 +182,27 @@ def query_api(term, location):
 
 
 
+def main():
+    parser = argparse.ArgumentParser()
 
+    parser.add_argument('-q', '--term', dest='term', default=DEFAULT_TERM,
+                        type=str, help='Search term (default: %(default)s)')
+    parser.add_argument('-l', '--location', dest='location',
+                        default=DEFAULT_LOCATION, type=str,
+                        help='Search location (default: %(default)s)')
 
+    input_values = parser.parse_args()
 
-
-
-#def main():
-parser = argparse.ArgumentParser()
-
-parser.add_argument('-q', '--term', dest='term', default=DEFAULT_TERM,
-                    type=str, help='Search term (default: %(default)s)')
-parser.add_argument('-l', '--location', dest='location',
-                    default=DEFAULT_LOCATION, type=str,
-                    help='Search location (default: %(default)s)')
-
-input_values = parser.parse_args()
-
-try:
-    query_api(input_values.term, input_values.location)
-except HTTPError as error:
-    sys.exit(
-        'Encountered HTTP error {0} on {1}:\n {2}\nAbort program.'.format(
-            error.code,
-            error.url,
-            error.read(),
+    try:
+        query_api(input_values.term, input_values.location)
+    except HTTPError as error:
+        sys.exit(
+            'Encountered HTTP error {0} on {1}:\n {2}\nAbort program.'.format(
+                error.code,
+                error.url,
+                error.read(),
+            )
         )
-    )
 
-#if __name__ == '__main__':
-#    main()
+if __name__ == '__main__':
+    main()
