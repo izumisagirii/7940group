@@ -37,6 +37,22 @@ def storage(update, context, bot_reply):
     collection.insert_one(document)
 
 
+def get_last_bot_reply(update, context):
+    try:
+        user_id = update.message.from_user.id
+        last_message = collection.find_one(
+            {'user_id': user_id},
+            sort=[('message.timestamp', -1)]
+        )
+        if last_message:
+            return last_message['bot_reply']['text']
+        else:
+            return ''
+    except Exception as e:
+        print(f"An error occurred: {e}")
+        return ''
+
+
 if __name__ == '__main__':
     post = {"author": "YHCui", "text": "Hello, World!"}
     post_id = collection.insert_one(post).inserted_id

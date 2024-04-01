@@ -27,6 +27,12 @@ jobs:
           BOT_TOKEN=${{ secrets.BOT_TOKEN }}
           COSMOSDB_URL=${{ secrets.COSMOSDB_URL }}
           COSMOSDB_KEY=${{ secrets.COSMOSDB_KEY }}
+          GOOGLE_TOKEN=${{ secrets.GOOGLE_TOKEN }}
+          YELP_TOKEN=${{ secrets.YELP_TOKEN }}
+          BASICURL=${{ secrets.BASICURL }}
+          MODELNAME=${{ secrets.MODELNAME }}
+          APIVERSION=${{ secrets.APIVERSION }}
+          ACCESS_TOKEN=${{ secrets.ACCESS_TOKEN }}
     - name: Login to Azure
       uses: azure/login@v1
       with:

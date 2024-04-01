@@ -18,6 +18,8 @@ app.add_url_rule('/startup', 'startup', startup_probe)
 app.add_url_rule('/readiness', 'readiness', readiness_probe)
 app.add_url_rule('/liveness', 'liveness', liveness_probe)
 
+ChatGPT = HKBU_ChatGPT()
+
 
 def run_flask_app():
     app.run(port=443)
@@ -209,8 +211,8 @@ def yelp_in_bot(update: Update, context: CallbackContext) -> None:
 
 def handle_message(update, context):
     # add your process of bot_reply
-
-    bot_reply = "zsbdddd"
+    former_text = mongodb.get_last_bot_reply(update, context)
+    bot_reply = ChatGPT.submit(former_text+'\n'+update.message.text)
     mongodb.storage(update, context, bot_reply)
     update.message.reply_text(bot_reply)
 
