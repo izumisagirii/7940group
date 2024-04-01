@@ -83,10 +83,10 @@ def echo(update, context):
 def help_command(update: Update, context: CallbackContext) -> None:
     """Send a message when the command /help is issued."""
     update.message.reply_text(
-        'Do you need some help for your HongKong travel?/n \
-            Use /yelp to find interesting places./n \
-            Use /route to find route and steps to the place./n \
-            You can talk freely with ChatCPT.')
+        'Do you need some help for your HongKong travel?\n' +
+        'Use /yelp to find interesting places.\n' +
+        'Use /route to find route and steps to the place\n' +
+        'You can talk freely with ChatCPT.')
 
 
 def hello_command(update: Update, context: CallbackContext) -> None:
@@ -114,6 +114,10 @@ def route(update: Update, context: CallbackContext) -> None:
                                   '\nEnd Address: ' + End_Address +
                                   '\nDistance: ' + Distance +
                                   '\nDuration: ' + Duration)
+        mongodb.storage(update, context, 'Start Address: ' + Start_Address +
+                        '\nEnd Address: ' + End_Address +
+                        '\nDistance: ' + Distance +
+                        '\nDuration: ' + Duration)
         for step in Step:       # Show the user each step in the route, and if there is a step to take the metro or bus, show the information about the metro or bus to be taken.
             i += 1
             if "description" in step:
@@ -187,7 +191,7 @@ def yelp_in_bot(update: Update, context: CallbackContext) -> None:
                 ', '.join(business['location']['display_address']))
             message += 'Phone Num: {}\n'.format(business['phone'])
         message += '...\n'
-
+        mongodb.storage(update, context, message)
         update.message.reply_text(message)
     except Exception as e:
         update.message.reply_text(
