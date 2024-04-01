@@ -1,4 +1,5 @@
 import datetime
+import threading
 from ChatGPT_HKBU import HKBU_ChatGPT
 from telegram import Update
 from telegram.ext import (Updater, CommandHandler, MessageHandler, Filters,
@@ -17,10 +18,16 @@ app.add_url_rule('/readiness', 'readiness', readiness_probe)
 app.add_url_rule('/liveness', 'liveness', liveness_probe)
 
 
+def run_flask_app():
+    app.run(port=443)
+
+
 def main():
 
     # Handle http probes, which are required by Microsoft container app
-    app.run(port=443)
+    # app.run(port=443)
+    flask_thread = threading(target=run_flask_app)
+    flask_thread.start()
     # Load your token and create an Updater for your Bot
     telegram_token = os.environ['BOT_TOKEN']
     updater = Updater(
