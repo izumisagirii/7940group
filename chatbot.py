@@ -165,7 +165,7 @@ def yelp_in_bot(update: Update, context: CallbackContext) -> None:
             return
 
         # Use the yelp module to search for businesses based on the location and type parameters
-        response = yelp.search(api_key=KJw1YCF5WJzMMwV458YOCd3KRTMhUHjC7SZ5tv24vHKVBWZsDFlm3z9DVyRvtA6_0xMTwnDRUBqPq9od8JVBEp3363UFnvgtKLC0D4pD-FcSuLWvrQvaPgTwcZj4ZXYx,
+        response = yelp.search(api_key='KJw1YCF5WJzMMwV458YOCd3KRTMhUHjC7SZ5tv24vHKVBWZsDFlm3z9DVyRvtA6_0xMTwnDRUBqPq9od8JVBEp3363UFnvgtKLC0D4pD-FcSuLWvrQvaPgTwcZj4ZXYx',
                                 term=type_parameter, location=location_parameter)
         businesses = response.get('businesses', [])
 
