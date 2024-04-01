@@ -156,9 +156,9 @@ def yelp_in_bot(update: Update, context: CallbackContext) -> None:
         type_parameter = None
         for part in parts:
             if part.startswith('location:'):
-                location_parameter = part.split(':')[1].strip()
+                location_parameter = part.split(':')[1].lstrip()
             elif part.startswith('type:'):
-                type_parameter = part.split(':')[1].strip()
+                type_parameter = part.split(':')[1].lstrip()
                 #Scan through elements in parts, check if starts with 'location:' or 'type:', and assign the value to location_parameter or type_parameter accordingly.
         if location_parameter is None or type_parameter is None:
             update.message.reply_text('Please provide both location and type parameters in the format: /yelp location: <location>, type: <type>')
