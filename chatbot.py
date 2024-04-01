@@ -28,7 +28,7 @@ def main():
 
     # Handle http probes, which are required by Microsoft container app
     # app.run(port=443)
-    flask_thread = threading(target=run_flask_app)
+    flask_thread = threading.Thread(target=run_flask_app)
     flask_thread.start()
     # Load your token and create an Updater for your Bot
     telegram_token = os.environ['BOT_TOKEN']
