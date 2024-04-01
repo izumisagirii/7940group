@@ -36,8 +36,8 @@ jobs:
         az containerapp update --name server --resource-group COMP7940-2024 --yaml ${{ github.workspace }}/parameters.json
       env:
         AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
-    - name: Restart container
-      run: az containerapp revision deactivate -g COMP7940-2024 --revision server--um4e6kt && az containerapp revision activate -g COMP7940-2024 --revision server--um4e6kt
-      env:
-        AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
+    # - name: Restart container
+    #   run: az containerapp revision deactivate -g COMP7940-2024 --revision server--um4e6kt && az containerapp revision activate -g COMP7940-2024 --revision server--um4e6kt
+    #   env:
+    #     AZURE_CREDENTIALS: ${{ secrets.AZURE_CREDENTIALS }}
 
