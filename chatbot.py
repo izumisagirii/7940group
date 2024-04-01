@@ -1,3 +1,4 @@
+import yelp
 import datetime
 import threading
 from ChatGPT_HKBU import HKBU_ChatGPT
@@ -20,8 +21,6 @@ app.add_url_rule('/liveness', 'liveness', liveness_probe)
 
 def run_flask_app():
     app.run(port=443)
-import yelp
-
 
 
 def main():
@@ -53,7 +52,7 @@ def main():
     global google_route
     google_route = Route()
     dispatcher.add_handler(CommandHandler("route", route))
-    dispatcher.add_handler(CommandHandler('yelp',yelp_in_bot))
+    dispatcher.add_handler(CommandHandler('yelp', yelp_in_bot))
 
     # register a dispatcher to handle message: here we register an echo dispatcher
     # echo_handler = MessageHandler(Filters.text & (~Filters.command), echo)
@@ -84,7 +83,10 @@ def echo(update, context):
 def help_command(update: Update, context: CallbackContext) -> None:
     """Send a message when the command /help is issued."""
     update.message.reply_text(
-        'Do you need some help for your HongKong travel?')
+        'Do you need some help for your HongKong travel?/n \
+            Use /yelp to find interesting places./n \
+            Use /route to find route and steps to the place./n \
+            You can talk freely with ChatCPT.')
 
 
 def hello_command(update: Update, context: CallbackContext) -> None:
@@ -105,32 +107,36 @@ def route(update: Update, context: CallbackContext) -> None:
         logging.info(context.args)          # Get the text entered by the user
         # Extract the start address and end address from the text entered by the user
         start_add, end_add = extract_addresses_from_context(context.args)
-        Start_Address, End_Address, Distance, Duration, Step = google_route.query_route(start_add, end_add)      # Get route information
+        Start_Address, End_Address, Distance, Duration, Step = google_route.query_route(
+            start_add, end_add)      # Get route information
 
         update.message.reply_text('Start Address: ' + Start_Address +
-                                '\nEnd Address: ' + End_Address +
-                                '\nDistance: ' + Distance +
-                                '\nDuration: ' + Duration)
+                                  '\nEnd Address: ' + End_Address +
+                                  '\nDistance: ' + Distance +
+                                  '\nDuration: ' + Duration)
         for step in Step:       # Show the user each step in the route, and if there is a step to take the metro or bus, show the information about the metro or bus to be taken.
-             i += 1
-             if "description" in step:
-                update.message.reply_text('   Step' + str(i) + '-' + step["description"])
-             elif "Bus Information" in step:
+            i += 1
+            if "description" in step:
+                update.message.reply_text(
+                    '   Step' + str(i) + '-' + step["description"])
+            elif "Bus Information" in step:
                 subway_info = step["Bus Information"]
                 update.message.reply_text("Bus informarion:\n")
                 for key, value in subway_info.items():
                     update.message.reply_text(key + ": " + str(value))
                 i -= 1
-             elif "Subway Information" in step:
+            elif "Subway Information" in step:
                 subway_info = step["Subway Information"]
                 update.message.reply_text("Subway informarion:\n")
                 for key, value in subway_info.items():
-                     update.message.reply_text(key + ": " + str(value))
+                    update.message.reply_text(key + ": " + str(value))
                 i -= 1
 
     except (IndexError, ValueError, TypeError):
         update.message.reply_text('Your input maybe wrong, please check')
-        update.message.reply_text('Usage: /route S: <start address> E: <end address>')
+        update.message.reply_text(
+            'Usage: /route S: <start address> E: <end address>')
+
 
 def yelp_in_bot(update: Update, context: CallbackContext) -> None:
     """Send a message when the command /yelp is issued.
@@ -145,7 +151,7 @@ def yelp_in_bot(update: Update, context: CallbackContext) -> None:
     # Extract the location and type parameters from the user's message
     text = update.message.text
     try:
-        logging.info(context.args) 
+        logging.info(context.args)
         # Assuming the user's input format is "/yelp location: <location>, type: <type>"
         parts = text.split(' ')
         location_parameter = None
@@ -155,32 +161,38 @@ def yelp_in_bot(update: Update, context: CallbackContext) -> None:
                 location_parameter = part.split(':')[1].lstrip()
             elif part.startswith('type:'):
                 type_parameter = part.split(':')[1].lstrip()
-                #Scan through elements in parts, check if starts with 'location:' or 'type:', and assign the value to location_parameter or type_parameter accordingly.
+                # Scan through elements in parts, check if starts with 'location:' or 'type:', and assign the value to location_parameter or type_parameter accordingly.
         if location_parameter is None or type_parameter is None:
-            update.message.reply_text('Please provide both location and type parameters in the format: /yelp location: <location>, type: <type>')
+            update.message.reply_text(
+                'Please provide both location and type parameters in the format: /yelp location: <location>, type: <type>: TODO: Add the feasible <type> introduction to users')
             return
 
         # Use the yelp module to search for businesses based on the location and type parameters
-        response = yelp.search(api_key='KJw1YCF5WJzMMwV458YOCd3KRTMhUHjC7SZ5tv24vHKVBWZsDFlm3z9DVyRvtA6_0xMTwnDRUBqPq9od8JVBEp3363UFnvgtKLC0D4pD-FcSuLWvrQvaPgTwcZj4ZXYx',
-                                term=type_parameter, location=location_parameter)
+        response = yelp.search(api_key=os.environ['YELP_TOKEN'],
+                               term=type_parameter, location=location_parameter)
         businesses = response.get('businesses')
 
         if not businesses:
-            update.message.reply_text('No businesses found for the given location and type.')
+            update.message.reply_text(
+                'No businesses found for the given location and type.')
             return
 
         # Format the response to display the top 5 businesses or the total number of businesses found
-        message = 'Businesses found for "{}" in "{}":\n'.format(type_parameter, location_parameter)
+        message = 'Businesses found for "{}" in "{}":\n'.format(
+            type_parameter, location_parameter)
         for i, business in enumerate(businesses[:5], start=1):
-            message += '{}. {} - {} stars ({} reviews)\n'.format(i, business['name'], business['rating'], business['review_count'])
-            message += 'Address: {}\n'.format(', '.join(business['location']['display_address']))
+            message += '{}. {} - {} stars ({} reviews)\n'.format(
+                i, business['name'], business['rating'], business['review_count'])
+            message += 'Address: {}\n'.format(
+                ', '.join(business['location']['display_address']))
             message += 'Phone Num: {}\n'.format(business['phone'])
         message += '...\n'
 
         update.message.reply_text(message)
     except Exception as e:
-        update.message.reply_text('An error occurred while searching for businesses: {}, Usage: /location: <location>, type: <type>'.format(str(e)))
-      
+        update.message.reply_text(
+            'An error occurred while searching for businesses: {}, Usage: /location: <location>, type: <type>'.format(str(e)))
+
 
 # def equiped_chatgpt(update, context):
 #     global chatgpt
