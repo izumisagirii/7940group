@@ -22,10 +22,11 @@ import pprint
 import requests
 import sys
 import urllib
-import configparser
-config = configparser.ConfigParser()
-config.read('yelpconfig.ini')
-#print(config.sections())
+import os
+# import configparser
+# config = configparser.ConfigParser()
+# config.read('yelpconfig.ini')
+# print(config.sections())
 
 # This client code can run on Python 2.x or 3.x.  Your imports can be
 # simpler if you only need one of those.
@@ -46,8 +47,8 @@ except ImportError:
 # It now uses private keys to authenticate requests (API Key)
 # You can find it on
 # https://www.yelp.com/developers/v3/manage_app
-API_KEY= config.get('YELP', 'ACCESS_TOKEN')
-#print(API_KEY)
+API_KEY = os.environ['YELP_TOKEN']
+# print(API_KEY)
 
 # API constants, you shouldn't have to change these.
 API_HOST = 'https://api.yelp.com'
@@ -78,7 +79,7 @@ def request(host, path, api_key, url_params=None):
     """
     url_params = url_params or {}
     url = '{0}{1}'.format(host, quote(path.encode('utf8')))
-    
+
     headers = {
         'Authorization': 'Bearer %s' % api_key,
     }
@@ -122,6 +123,7 @@ def get_business(api_key, business_id):
 
     return request(API_HOST, business_path, api_key)
 
+
 '''PREVIOUS WASTED query_api FUNCTION CALL:
 def query_api(term, location):
     """Queries the API by the input values from the user.
@@ -149,6 +151,8 @@ def query_api(term, location):
     pprint.pprint(response, indent=2)
 
 '''
+
+
 def query_api(term, location):
     """Queries the API by the input values from the user and displays more results.
 
@@ -160,26 +164,26 @@ def query_api(term, location):
 
     businesses = response.get('businesses')
     pprint.pprint(businesses, indent=2)
-    #first_business_id = businesses[0]['id']
-
+    # first_business_id = businesses[0]['id']
 
     if not businesses:
         print(u'No businesses for {0} in {1} found.'.format(term, location))
         return
 
-    print(u'{0} businesses found for "{1}" in "{2}":'.format(len(businesses), term, location))
+    print(u'{0} businesses found for "{1}" in "{2}":'.format(
+        len(businesses), term, location))
 
     # Display the top 5 businesses or the total number of businesses found if less than 5
     for business in businesses[:]:
-        print(u'Business ID: {0}, Name: {1}, Alternate Name: {2}'.format(business['id'], business['name'], business['alias']))
-        print(u'Rating: {0}, Number of Reviews: {1}'.format(business['rating'], business['review_count'],))
-        print(u'Address: {0}'.format(', '.join(business['location']['display_address'])))
+        print(u'Business ID: {0}, Name: {1}, Alternate Name: {2}'.format(
+            business['id'], business['name'], business['alias']))
+        print(u'Rating: {0}, Number of Reviews: {1}'.format(
+            business['rating'], business['review_count'],))
+        print(u'Address: {0}'.format(
+            ', '.join(business['location']['display_address'])))
         print(u'Phone Num: {0}'.format(business['phone']))
-    #print(u'Result for business "{0}" found:'.format(first_business_id))
-    #pprint.pprint(response, indent=2)
-
-
-
+    # print(u'Result for business "{0}" found:'.format(first_business_id))
+    # pprint.pprint(response, indent=2)
 
 
 def main():
@@ -203,6 +207,7 @@ def main():
                 error.read(),
             )
         )
+
 
 if __name__ == '__main__':
     main()
