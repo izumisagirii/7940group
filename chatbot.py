@@ -159,14 +159,19 @@ def yelp_in_bot(update: Update, context: CallbackContext) -> None:
     try:
         logging.info(context.args)
         # Assuming the user's input format is "/yelp location: <location>, type: <type>"
-        parts = text.split(' ')
-        location_parameter = None
-        type_parameter = None
-        for part in parts:
-            if part.startswith('location:'):
-                location_parameter = part.split(':')[1].lstrip()
-            elif part.startswith('type:'):
-                type_parameter = part.split(':')[1].lstrip()
+
+        start_index_location = text.find('location:')+len('location: ')
+        #print(start_index_location)
+        end_index_location = text.find(', type')
+        #print(end_index_location)
+        location_parameter = text[start_index_location:end_index_location].strip()
+        #print(b)
+
+        end_index_type = text.find('type')+len('type: ')
+        #print(end_index_type)
+        type_parameter = text[end_index_type:].strip()
+        #print(type_parameter)
+
                 # Scan through elements in parts, check if starts with 'location:' or 'type:', and assign the value to location_parameter or type_parameter accordingly.
         if location_parameter is None or type_parameter is None:
             update.message.reply_text(
