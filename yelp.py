@@ -166,9 +166,9 @@ def query_api(term, location):
     pprint.pprint(businesses, indent=2)
     # first_business_id = businesses[0]['id']
 
-    if not businesses:
-        print(u'No businesses for {0} in {1} found.'.format(term, location))
-        return
+    # if not businesses:
+    #     print(u'No businesses for {0} in {1} found.'.format(term, location))
+    #     return
 
     print(u'{0} businesses found for "{1}" in "{2}":'.format(
         len(businesses), term, location))
