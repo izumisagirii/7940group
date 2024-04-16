@@ -173,9 +173,9 @@ def yelp_in_bot(update: Update, context: CallbackContext) -> None:
         #print(type_parameter)
 
                 # Scan through elements in parts, check if starts with 'location:' or 'type:', and assign the value to location_parameter or type_parameter accordingly.
-        if len(location_parameter)==0 or type_parameter is None:
+        if len(location_parameter)==0 or len(type_parameter)==0:
             update.message.reply_text(
-                'Please provide both location and type parameters in the format: /yelp location: <location>, type: <type>: TODO: Add the feasible <type> introduction to users')
+                'Please provide both location and type parameters in the format: /yelp location: <approximate location of the spots of interest you are looking for>, type: <type of the place you are looking for>: ')
             return
 
         # Use the yelp module to search for businesses based on the location and type parameters
